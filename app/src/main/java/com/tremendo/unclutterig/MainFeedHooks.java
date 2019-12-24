@@ -63,7 +63,7 @@ public class MainFeedHooks {
 					}
 				}
 
-				showFeedItemView(feedItemView, true);
+				showFeedItemView(feedItemView, false);
 			}
 		});
 

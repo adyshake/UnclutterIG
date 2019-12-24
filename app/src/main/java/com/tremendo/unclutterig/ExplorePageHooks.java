@@ -199,7 +199,7 @@ public class ExplorePageHooks {
 
 
 	private static boolean isSearchTabButtonSelected(View rootView) {
-		ViewGroup tabBar = rootView.findViewById(ResourceUtils.getId("tab_bar"));
+		ViewGroup tabBar = (ViewGroup)rootView.findViewById(ResourceUtils.getId("tab_bar"));
 		if (tabBar!= null) {
 			findAndTagSearchIcon(tabBar);
 			View searchTabIcon = tabBar.findViewWithTag(SEARCH_ICON_TAG);

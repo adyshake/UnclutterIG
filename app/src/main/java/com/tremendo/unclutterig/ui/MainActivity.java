@@ -58,9 +58,9 @@ public class MainActivity extends Activity {
 									  .putExtra("section", "modules")
 									  .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 								startActivity(intent);
-								showToast("Launching Xposed Installer...");
+//								showToast("Launching Xposed Installer...");
 							} catch (ActivityNotFoundException e) {
-								showToast("Use Xposed Installer to activate module");
+//								showToast("Use Xposed Installer to activate module");
 							}
 							return true;
 						}
@@ -80,12 +80,12 @@ public class MainActivity extends Activity {
 
 
 
-		private void showToast(CharSequence message) {
+		private void showToast(CharSequence message, Context context) {
 			if (toast != null) {
 				toast.setText(message);
 			}
 			else {
-				toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+				toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
 			}
 			toast.show();
 		}

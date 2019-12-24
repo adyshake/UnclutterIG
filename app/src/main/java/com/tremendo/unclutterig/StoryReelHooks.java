@@ -42,34 +42,38 @@ public class StoryReelHooks {
 			@Override
 			public void beforeHookedMethod(final MethodHookParam param) throws Throwable {
 
-				if (!shouldHideAds() && !shouldHidePaidPartnershipPosts()) {
-					return;
-				}
-
 				List storyReelMediaList = (List) param.args[0];
+				storyReelMediaList.clear();
+				return;
 
-				if (storyReelMediaList == null || storyReelMediaList.isEmpty()) {
-					return;
-				}
-
-				if (shouldHideAds()) {
-					Object mediaObjectInStoryReel = storyReelMediaList.get(0);
-
-					if (MediaObjectUtils.isSponsoredContent(mediaObjectInStoryReel)) {
-						storyReelMediaList.clear();
-						return;
-					}
-				}
-
-				if (shouldHidePaidPartnershipPosts()) {
-					for (int index = storyReelMediaList.size()-1; index >= 0; index--) {
-						Object mediaObjectInStoryReel = storyReelMediaList.get(index);
-
-						if (MediaObjectUtils.isPaidPartnershipContent(mediaObjectInStoryReel)) {
-							storyReelMediaList.remove(index);
-						}
-					}
-				}
+//				if (!shouldHideAds() && !shouldHidePaidPartnershipPosts()) {
+//					return;
+//				}
+//
+//
+//
+//				if (storyReelMediaList == null || storyReelMediaList.isEmpty()) {
+//					return;
+//				}
+//
+//				if (shouldHideAds()) {
+//					Object mediaObjectInStoryReel = storyReelMediaList.get(0);
+//
+//					if (MediaObjectUtils.isSponsoredContent(mediaObjectInStoryReel)) {
+//						storyReelMediaList.clear();
+//						return;
+//					}
+//				}
+//
+//				if (shouldHidePaidPartnershipPosts()) {
+//					for (int index = storyReelMediaList.size()-1; index >= 0; index--) {
+//						Object mediaObjectInStoryReel = storyReelMediaList.get(index);
+//
+//						if (MediaObjectUtils.isPaidPartnershipContent(mediaObjectInStoryReel)) {
+//							storyReelMediaList.remove(index);
+//						}
+//					}
+//				}
 
 			}
 		});

@@ -2,16 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tremendo.unclutterig" >
 
-	<uses-sdk 
-        android:minSdkVersion="15" 
-        android:targetSdkVersion="21" />
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_unclutterig"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme.Light"
-		android:resizeableActivity="true">
+        android:theme="@style/AppTheme.Light">
 
 		<meta-data
             android:name="xposedmodule"
