@@ -1,9 +1,16 @@
 package com.tremendo.unclutterig;
 
 import android.content.*;
+import android.graphics.Canvas;
+import android.provider.ContactsContract;
 import android.view.*;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+
 import static com.tremendo.unclutterig.UnclutterIG.*;
 import com.tremendo.unclutterig.util.MediaObjectUtils;
+import com.tremendo.unclutterig.util.ResourceUtils;
+
 import java.lang.reflect.*;
 
 import de.robv.android.xposed.*;
@@ -15,14 +22,41 @@ public class MainFeedHooks {
 
 	private LoadPackageParam lpparam;
 
-
 	public MainFeedHooks(final LoadPackageParam lpparam) {
 		this.lpparam = lpparam;
 	}
 
-
+	// TODO - Clear this cheeky hack that might only work for build - 105.0.0.18.119
+	private String mainFeedAdapterClassName = "X.1HU";
 
 	protected void doHooks() {
+		doStoryHooks();
+		doMainFeedHooks();
+	}
+
+	protected void doStoryHooks() {
+		Method setAdapterMethod = null;
+		setAdapterMethod = findMethodExact(ListView.class, "setAdapter", ListAdapter.class);
+		if (setAdapterMethod != null) {
+			XposedBridge.hookMethod(setAdapterMethod, new XC_MethodHook() {
+				@Override
+				public void beforeHookedMethod(final MethodHookParam param) throws Throwable {
+					Object adapter = param.args[0];
+
+					if (adapter == null) {
+						return;
+					}
+					if (isOnMainPage(param.thisObject, adapter.getClass())) {
+						if (shouldHideStories()) {
+							param.setResult(null);
+						}
+					}
+				}
+			});
+		}
+	}
+
+	protected void doMainFeedHooks() {
 		String feedViewClassName = findFeedViewClassName(lpparam.classLoader);
 
 		if (feedViewClassName == null) {
@@ -44,6 +78,12 @@ public class MainFeedHooks {
 			@Override
 			protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 				View feedItemView = (View) param.getResult();
+
+				if (shouldHideMainFeed()) {
+					showFeedItemView(feedItemView, false);
+					return;
+				}
+
 				Object mediaObjectInFeedItem = param.args[3];
 
 				if (mediaObjectInFeedItem != null) {
@@ -63,13 +103,38 @@ public class MainFeedHooks {
 					}
 				}
 
-				showFeedItemView(feedItemView, false);
+				showFeedItemView(feedItemView, true);
 			}
 		});
-
 	}
 
+	private String getMainFeedAdapterClassName() {
+		return mainFeedAdapterClassName;
+	}
 
+	private static boolean hasMainPageIcon(View rootView) {
+		// TODO - Find a resource that actually exists and works on the main page
+		//        because this one does not
+		return (rootView.findViewById(ResourceUtils.getId("unread_count_text_view")) != null);
+	}
+
+	private static boolean isMainPagePrimaryFeed(View adapterHolderView) {
+		return hasMainPageIcon(adapterHolderView.getRootView());
+	}
+
+	private boolean isOnMainPage(Object adapterContainer, Class<?> adapterClass) {
+		if (getMainFeedAdapterClassName() != null) {
+			return getMainFeedAdapterClassName().equals(adapterClass.getName());
+		}
+
+		View rootView = ((View) adapterContainer).getRootView();
+		if (isMainPagePrimaryFeed(rootView)) {
+			mainFeedAdapterClassName = adapterClass.getName();
+			return true;
+		}
+
+		return false;
+	}
 
 	/* 
 	 *   Scans field types in the third parameter of LoadMoreButton's method 'setViewType(LoadMoreButton, ?, *?*)'.
@@ -98,8 +163,6 @@ public class MainFeedHooks {
 		return null;
 	}
 
-
-
 	private void showFeedItemView(View view, boolean setVisible) {
 		ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
 
@@ -114,9 +177,6 @@ public class MainFeedHooks {
 			layoutParams.height = 1;
 			view.setVisibility(View.GONE);
 		}
-
 		view.setLayoutParams(layoutParams);
 	}
-
-
 }

@@ -9,7 +9,17 @@
 	/>
 
 	<PreferenceCategory
-		android:title="Unclutter Options - Main Feed">	
+		android:title="Main Page">
+		<CheckBoxPreference
+			android:key="hide_stories"
+			android:title="Stories"
+			android:summary="Hide stories bar and disables stories"
+			/>
+		<CheckBoxPreference
+			android:key="hide_main_feed"
+			android:title="Main Feed"
+			android:summary="Hide the main feed"
+			/>
 		<CheckBoxPreference
 			android:key="hide_ads"
 			android:title="'Sponsored' Content"
@@ -27,7 +37,7 @@
 		<CheckBoxPreference
 			android:key="hide_explore"
 			android:title="'Explore' Content"
-			android:summary="Hide suggested posts in the search / explore page"
+			android:summary="Hide suggested posts in the search/explore page"
 		/>
 	</PreferenceCategory>
 

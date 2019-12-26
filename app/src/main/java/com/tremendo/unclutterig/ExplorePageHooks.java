@@ -15,7 +15,6 @@ import static de.robv.android.xposed.XposedHelpers.*;
 
 
 public class ExplorePageHooks {
-
 	protected static final String UNCLUTTERED_INDICATOR_TAG = "uncluttered_indicator";
 
 	private static final String SEARCH_ICON_TAG = "search_icon";
@@ -33,8 +32,6 @@ public class ExplorePageHooks {
 		this.lpparam = lpparam;
 	}
 
-
-
 	protected void doHooks() {
 
 		String storedExploreLoaderClassName = ResourceUtils.getCurrentVersionStoredValue("explore_loader_class");
@@ -50,8 +47,6 @@ public class ExplorePageHooks {
 
 		hookExploreFeedAdapter();
 	}
-
-
 
 	private void hookExploreTopicAdapter() {
 		try {
@@ -86,8 +81,6 @@ public class ExplorePageHooks {
 			errorLog("Couldn't find RecyclerView class to scan adapters for 'Explore' page header");
 		}
 	}
-
-
 
 	private void hookExploreFeedAdapter() {
 		Method setAdapterMethod = null;
@@ -133,8 +126,6 @@ public class ExplorePageHooks {
 		});
 	}
 
-
-
 	private boolean isExploreTopicHeader(Object adapterContainer, Class<?> adapterClass) {
 
 		if (getExploreTopicAdapterClassName() != null) {
@@ -150,14 +141,10 @@ public class ExplorePageHooks {
 		return false;
 	}
 
-
-
 	private boolean matchesExploreHeaderPadding(int padding) {
 		int headerPaddingResourceId = ResourceUtils.getId(getTopicHeaderPaddingResourceName(), "dimen");
 		return padding == (int) ResourceUtils.getDimension(headerPaddingResourceId);
 	}
-
-
 
 	private int getTopicHeaderResourceId() {
 		if (isAppStructureRevised()) {
@@ -166,16 +153,12 @@ public class ExplorePageHooks {
 		return ResourceUtils.getId("topic_cluster_hscroll");
 	}
 
-
-
 	private String getTopicHeaderPaddingResourceName() {
 		if (isAppStructureRevised()) {
 			return "explore_header_vertical_padding";
 		}
 		return "topic_cluster_header_padding";
 	}
-
-
 
 	private boolean isOnExplorePage(Object adapterContainer, Class<?> adapterClass) {
 
@@ -196,8 +179,6 @@ public class ExplorePageHooks {
 		return false;
 	}
 
-
-
 	private static boolean isSearchTabButtonSelected(View rootView) {
 		ViewGroup tabBar = (ViewGroup)rootView.findViewById(ResourceUtils.getId("tab_bar"));
 		if (tabBar!= null) {
@@ -207,8 +188,6 @@ public class ExplorePageHooks {
 		}
 		return false;
 	}
-
-
 
 	/*
 	 *   Tagging 'search' icon in tab bar for convenient way of finding it from rootView
@@ -225,8 +204,6 @@ public class ExplorePageHooks {
 		}
 	}
 
-
-
 	private static boolean hasSelectedState(View imageView) {
 		int selectedState = ResourceUtils.getId("state_selected", "attr", "android");
 		for (int drawableState : imageView.getDrawableState()) {
@@ -237,13 +214,9 @@ public class ExplorePageHooks {
 		return false;
 	}
 
-
-
 	private static boolean isExplorePagePrimaryFeed(View adapterHolderView) {
 		return hasPeekContainer(adapterHolderView.getRootView());
 	}
-
-
 
 	/*
 	 *   For newer versions... hack-ish way of determining whether explore page is at top-most level
@@ -251,8 +224,6 @@ public class ExplorePageHooks {
 	private static boolean hasPeekContainer(View rootView) {
 		return (rootView.findViewById(ResourceUtils.getId("peek_container")) != null);
 	}
-
-
 
 	private boolean isLegacyExploreFeedAdapter(Class<?> AdapterObjectClass) {
 		ClassToScan UnknownAdapterClass = new ClassToScan(AdapterObjectClass);
@@ -264,8 +235,6 @@ public class ExplorePageHooks {
 
 		return false;
 	}
-
-
 
 	/*
 	 *   When feed adapter is detected, module's receiver handles this intent and stores 'loader' class name in SharedPreferences.
@@ -294,8 +263,6 @@ public class ExplorePageHooks {
 		}
 	}
 
-
-
 	protected static void setUnclutteredStatusIndicator(ViewGroup viewGroup) {
 		if (viewGroup == null) {
 			return;
@@ -314,8 +281,6 @@ public class ExplorePageHooks {
 		}
 	}
 
-
-
 	private static TextView unclutteredTextView() {
 		TextView textView = new TextView(AndroidAppHelper.currentApplication().getApplicationContext());
 		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -328,8 +293,6 @@ public class ExplorePageHooks {
 		return textView;
 	}
 
-
-
 	protected static void hideView(View view) {
 		if (view == null) {
 			return;
@@ -340,19 +303,13 @@ public class ExplorePageHooks {
 		view.setVisibility(View.GONE);
 	}
 
-
-
 	private String getExploreFeedAdapterClassName() {
 		return exploreFeedAdapterClassName;
 	}
 
-
-
 	private String getExploreTopicAdapterClassName() {
 		return exploreTopicAdapterClassName;
 	}
-
-
 
 	/*
 	 *   Revised versions of 'Explore' page are instances of ExpandingListView (inherits from ListView).
@@ -367,11 +324,7 @@ public class ExplorePageHooks {
 		}
 	}
 
-
-
 	private boolean isAppStructureRevised() {
 		return appStructureRevised;
 	}
-
-
 }

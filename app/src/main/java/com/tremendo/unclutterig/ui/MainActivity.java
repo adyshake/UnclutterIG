@@ -7,10 +7,7 @@ import android.preference.*;
 import android.widget.*;
 import com.tremendo.unclutterig.R;
 
-
 public class MainActivity extends Activity {
-
-
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -23,12 +20,8 @@ public class MainActivity extends Activity {
 
 	}
 
-
-
 	public static class PrefsFragment extends PreferenceFragment {
-
 		Toast toast;
-
 
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
@@ -38,8 +31,6 @@ public class MainActivity extends Activity {
 			addPreferencesFromResource(R.xml.preferences);
 			setXposedPreference();
 		}
-
-
 
 		private void setXposedPreference() {
 			Preference activateXposedPreference = getPreferenceManager().findPreference("xposed");
@@ -58,9 +49,9 @@ public class MainActivity extends Activity {
 									  .putExtra("section", "modules")
 									  .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 								startActivity(intent);
-//								showToast("Launching Xposed Installer...");
+								//showToast("Launching Xposed Installer...");
 							} catch (ActivityNotFoundException e) {
-//								showToast("Use Xposed Installer to activate module");
+								//showToast("Use Xposed Installer to activate module");
 							}
 							return true;
 						}
@@ -69,16 +60,12 @@ public class MainActivity extends Activity {
 			}
 		}
 
-
-
 		/*
 		 *   Method is hooked in Xposed, set to true
 		 */
 		private boolean isXposedActive() {
 			return false;
 		}
-
-
 
 		private void showToast(CharSequence message, Context context) {
 			if (toast != null) {
@@ -89,8 +76,5 @@ public class MainActivity extends Activity {
 			}
 			toast.show();
 		}
-
 	}
-
-
 }

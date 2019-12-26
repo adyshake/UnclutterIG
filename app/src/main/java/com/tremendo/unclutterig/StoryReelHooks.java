@@ -9,17 +9,12 @@ import de.robv.android.xposed.*;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import static de.robv.android.xposed.XposedHelpers.*;
 
-
 public class StoryReelHooks {
-
 	private LoadPackageParam lpparam;
-
 
 	public StoryReelHooks(final LoadPackageParam lpparam) {
 		this.lpparam = lpparam;
 	}
-
-
 
 	protected void doHooks() {
 
@@ -41,46 +36,42 @@ public class StoryReelHooks {
 		XposedBridge.hookMethod(reelListMethod, new XC_MethodHook() {
 			@Override
 			public void beforeHookedMethod(final MethodHookParam param) throws Throwable {
-
 				List storyReelMediaList = (List) param.args[0];
-				storyReelMediaList.clear();
-				return;
 
-//				if (!shouldHideAds() && !shouldHidePaidPartnershipPosts()) {
-//					return;
-//				}
-//
-//
-//
-//				if (storyReelMediaList == null || storyReelMediaList.isEmpty()) {
-//					return;
-//				}
-//
-//				if (shouldHideAds()) {
-//					Object mediaObjectInStoryReel = storyReelMediaList.get(0);
-//
-//					if (MediaObjectUtils.isSponsoredContent(mediaObjectInStoryReel)) {
-//						storyReelMediaList.clear();
-//						return;
-//					}
-//				}
-//
-//				if (shouldHidePaidPartnershipPosts()) {
-//					for (int index = storyReelMediaList.size()-1; index >= 0; index--) {
-//						Object mediaObjectInStoryReel = storyReelMediaList.get(index);
-//
-//						if (MediaObjectUtils.isPaidPartnershipContent(mediaObjectInStoryReel)) {
-//							storyReelMediaList.remove(index);
-//						}
-//					}
-//				}
+				if (shouldHideStories()) {
+					storyReelMediaList.clear();
+					return;
+				}
 
+				if (!shouldHideAds() && !shouldHidePaidPartnershipPosts()) {
+					return;
+				}
+
+				if (storyReelMediaList == null || storyReelMediaList.isEmpty()) {
+					return;
+				}
+
+				if (shouldHideAds()) {
+					Object mediaObjectInStoryReel = storyReelMediaList.get(0);
+
+					if (MediaObjectUtils.isSponsoredContent(mediaObjectInStoryReel)) {
+						storyReelMediaList.clear();
+						return;
+					}
+				}
+
+				if (shouldHidePaidPartnershipPosts()) {
+					for (int index = storyReelMediaList.size()-1; index >= 0; index--) {
+						Object mediaObjectInStoryReel = storyReelMediaList.get(index);
+
+						if (MediaObjectUtils.isPaidPartnershipContent(mediaObjectInStoryReel)) {
+							storyReelMediaList.remove(index);
+						}
+					}
+				}
 			}
 		});
-
 	}
-
-
 
 	/*
 	 *   Should be a method in ReelViewerFragment with the targeted 'reel' class as second parameter in signature: (ReelViewerFragment, ?, String, Integer)
@@ -105,8 +96,6 @@ public class StoryReelHooks {
 		return null;
 	}
 
-
-
 	private static Method findReelListMethod(Class<?> ReelClass) {
 		Method[] methods = findMethodsByExactParameters(ReelClass, void.class, List.class);
 
@@ -116,6 +105,4 @@ public class StoryReelHooks {
 
 		return null;
 	}
-
-
 }

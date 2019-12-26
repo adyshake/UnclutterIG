@@ -8,9 +8,7 @@ import de.robv.android.xposed.*;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import static de.robv.android.xposed.XposedHelpers.*;
 
-
 public class UnclutterIG implements IXposedHookLoadPackage {
-
 	public static final String MODULE_PACKAGE_NAME = UnclutterIG.class.getPackage().getName();
 
 	protected static final String INSTAGRAM_PACKAGE_NAME = "com.instagram.android";
@@ -23,6 +21,9 @@ public class UnclutterIG implements IXposedHookLoadPackage {
 
 	private static boolean shouldHideExploreFeed;
 
+	private static boolean shouldHideStories;
+
+	private static boolean shouldHideMainFeed;
 
 	public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
 
@@ -34,7 +35,6 @@ public class UnclutterIG implements IXposedHookLoadPackage {
 		if (!INSTAGRAM_PACKAGE_NAME.equals(lpparam.packageName) || !INSTAGRAM_PACKAGE_NAME.equals(lpparam.processName)) {
 			return;
 		}
-
 
 		resetVariables();
 
@@ -58,8 +58,6 @@ public class UnclutterIG implements IXposedHookLoadPackage {
 
 	}
 
-
-
 	private static String findMainActivityClassName() {
 		PackageInfo packageInfo = getPackageInfo();
 
@@ -74,8 +72,6 @@ public class UnclutterIG implements IXposedHookLoadPackage {
 		return null;
 	}
 
-
-
 	public static String getHookedVersionName() {
 		if (hookedAppVersion == null) {
 			hookedAppVersion = getPackageInfo().versionName;
@@ -83,8 +79,6 @@ public class UnclutterIG implements IXposedHookLoadPackage {
 
 		return hookedAppVersion;
 	}
-
-
 
 	private static PackageInfo getPackageInfo() {
 		Object activityThread = callStaticMethod(findClass("android.app.ActivityThread", null), "currentActivityThread");
@@ -99,8 +93,6 @@ public class UnclutterIG implements IXposedHookLoadPackage {
 		}
 	}
 
-
-
 	protected static void reloadModulePreferences() {
 		XSharedPreferences prefs = new XSharedPreferences(MODULE_PACKAGE_NAME);
 
@@ -108,9 +100,9 @@ public class UnclutterIG implements IXposedHookLoadPackage {
 		shouldHideAds = prefs.getBoolean("hide_ads", false);
 		shouldHidePaidPosts = prefs.getBoolean("hide_paidpartnerships", false);
 		shouldHideExploreFeed = prefs.getBoolean("hide_explore", false);
+		shouldHideStories = prefs.getBoolean("hide_stories", false);
+		shouldHideMainFeed = prefs.getBoolean("hide_main_feed", false);
 	}
-
-
 
 	protected static boolean shouldHideAds() {
 		return shouldHideAds;
@@ -128,7 +120,13 @@ public class UnclutterIG implements IXposedHookLoadPackage {
 		return shouldHideExploreFeed;
 	}
 
+	protected static boolean shouldHideStories() {
+		return shouldHideStories;
+	}
 
+	protected static boolean shouldHideMainFeed() {
+		return shouldHideMainFeed;
+	}
 
 	protected static void tryHookingMethod(String className, ClassLoader classLoader, final String methodName, final Object... parameterTypesAndCallback) {
 		try {
@@ -140,19 +138,13 @@ public class UnclutterIG implements IXposedHookLoadPackage {
 		}
 	}
 
-
-
 	public static void errorLog(CharSequence errorMessage) {
 		XposedBridge.log("Unclutter IG: " + errorMessage + "...  Instagram version '" + getHookedVersionName() + "' not supported");
 	}
-
-
 
 	private void resetVariables() {
 		hookedAppVersion = null;
 		reloadModulePreferences();
 		MediaObjectUtils.resetVariables();
 	}
-
-
 }
